@@ -15,14 +15,7 @@ type Props = {
   };
 };
 
-type EventsPageProps = Props & {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default async function MenusPage({
-  params,
-  searchParams,
-}: EventsPageProps) {
+export default async function MenusPage({ params }: Props) {
   const restaurant = params.restaurant;
   const restaurantName = await prisma.restaurants.findUnique({
     where: {
@@ -30,20 +23,12 @@ export default async function MenusPage({
     },
   });
 
-  const parsedPage = pageNumberSchema.safeParse(searchParams.page);
-  if (!parsedPage.success) {
-    throw new Error("Invalid page number");
-  }
-
   return (
     <main className="flex flex-col items-center py-24 px-[20px] min-h-[110vh]">
       <H1 className="mb-28">{restaurantName?.name}</H1>
 
-      <Suspense key={"Restaurants " + parsedPage.data} fallback={<Loading />}>
-        <RestaurantProductsList
-          restaurant={restaurant}
-          page={parsedPage.data}
-        />
+      <Suspense key={restaurant} fallback={<Loading />}>
+        <RestaurantProductsList restaurant={restaurant} />
       </Suspense>
     </main>
   );
