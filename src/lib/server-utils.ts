@@ -6,6 +6,9 @@ export const getRestaurants = unstable_cache(async (page = 1) => {
   const restaurants = await prisma.restaurants.findMany({
     take: PAGE_SIZE,
     skip: (page - 1) * PAGE_SIZE,
+    orderBy: {
+      prestoID: "asc",
+    },
   });
 
   const totalCount = await prisma.restaurants.count({});
