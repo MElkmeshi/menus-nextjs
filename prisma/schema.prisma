@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String?
+  password        String?
+  phoneNumber     String?
+  whatsappGroupID String?
+  resetToken      String?
+  isAdmin         Boolean   @default(false)
+  isDriver        Boolean   @default(false)
+  createdAt       DateTime? @default(now())
+  updatedAt       DateTime? @updatedAt
+}
+
+model restaurants {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  prestoID       Int
+  name           String
+  image          String
+  address        String
+  googleMapsLink String
+  products       products[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model products {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  image        String
+  price        Float
+  restaurantId restaurants @relation(fields: [restaurant], references: [id])
+  restaurant   String      @db.ObjectId
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
